@@ -54,6 +54,8 @@ shuffle($result);
 <?php createTrackDB($conn, $CompName); ?>
 
 <?php foreach($result as $row): ?>
+    <?php $scoreAdded = checkIfScorePresent($conn, $row['ID']) ?>
+
     <?php 
 
         if ($TrackNum > 5 || ($ContenderNum == ($UnevenLimit + 1))) {
@@ -74,8 +76,18 @@ shuffle($result);
         <td><?= $row['Class'] ?></td>
         <td>
         <form method="POST" action="./logic/add_score.php?ContenderID=<?= $row['ID'] ?>&CompID=<?= $CompID ?>&Tour=<?= $Tour ?>">
+            <?php if ($scoreAdded): ?>
+            <?php $score = getScore($conn, $row['ID']) ?>
+
+            <input type="text" placeholder="00:00:00" name="score" value="<?= $score['Score'] ?>">
+            <input type="submit" value="OK">
+
+            <?php else: ?>
+
             <input type="text" placeholder="00:00:00" name="score">
             <input type="submit" value="OK">
+
+            <?php endif ?>
         </form>
         </td>
     </tr>
@@ -89,6 +101,17 @@ shuffle($result);
 <?php foreach($result as $row): ?>
 
 <?php $scoreAdded = checkIfScorePresent($conn, $row['ID']) ?>
+
+    <?php 
+
+        if ($TrackNum > 5 || ($ContenderNum == ($UnevenLimit + 1))) {
+            $TrackNum = 1;
+            $Tour++;
+        }
+
+        $ContenderNum++;
+
+    ?>
 
     <tr>
         <td>Tor: <?= $row['Track'] ?></td>
@@ -116,6 +139,8 @@ shuffle($result);
 <?php endforeach ?>
 
 <?php endif ?>
+
+<?php $_SESSION['Tours'] = $Tour; ?>
 
 </table>
 

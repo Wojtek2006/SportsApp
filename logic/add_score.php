@@ -11,6 +11,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $conn = connect($servername, $username, $password, $database);
 
+    if (checkIfScorePresent($conn, $ContenderID)) {
+        deleteScore($conn, $ContenderID);
+    }
+
     addScore($conn, $score, $ContenderID, $CompID, $tour);
 
     $conn->close();

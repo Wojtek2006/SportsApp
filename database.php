@@ -157,6 +157,22 @@ function getScore($conn, $ContenderID) {
     return $result;
 }
 
+function getContenderInfo($conn, $ContenderID) {
+    $stmt = $conn->prepare("SELECT * FROM Contenders WHERE ID = ?");
+
+    $stmt->bind_param("i", $ContenderID);
+
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    $result = $result->fetch_assoc();
+
+    $info = $result['FirstName'] . ' ' . $result['LastName'] . ' ' . $result['Class'];
+
+    return $info;
+}
+
 #CREATE FUNCTIONS
 #-----------------------------------------------------------------------------
 
@@ -247,6 +263,14 @@ function deleteTrackDB($conn, $CompName) {
     $result = $conn->query("DROP TABLE $TrackDBName");
 }
 
+function deleteScore($conn, $ContenderID) {
+    $stmt = $conn->prepare("DELETE FROM Scores WHERE ContenderID = ?");
+
+    $stmt->bind_param("i", $ContenderID);
+
+    $stmt->execute();
+}
+
 #ADD METHODS
 #-----------------------------------------------------------------------------
 
@@ -320,4 +344,16 @@ function checkIfScorePresent($conn, $ContenderID) {
     else {
         return false;
     }
+}
+
+function calculateResults($conn, $tour) {
+    $stmt = $conn->prepare("SELECT ContenderID, TIME_FORMAT(CONCAT('00:', Score), '%i:%s') as Score, Tour FROM Scores WHERE Tour = ? ORDER BY Score ASC");
+
+    $stmt->bind_param("i", $tour);
+
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    return $result;
 }

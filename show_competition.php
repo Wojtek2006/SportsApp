@@ -53,6 +53,9 @@ $_SESSION['TeamIDs'] = $TeamIDs;
 
 
 <a href="generate_tracks.php?CompID=<?= $CompID ?>">Wygeneruj tory</a>
+
+<a href="comp_result.php">Wyniki</a>
+
     
 </body>
 </html>

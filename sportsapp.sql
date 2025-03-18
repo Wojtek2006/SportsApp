@@ -8,7 +8,8 @@ create table Scores (
     ContenderID int,
     Score varchar(255),
     CompID int,
-    Tour int
+    Tour int,
+    Points int
 );
 
 create table Competitions (
