@@ -88,12 +88,12 @@ $result = getAllTeams($conn);
             drużynę</a>
         <!-- MAIN TEAM TABLE -->
         <div class="table-responsive">
-            <table class="table table-striped table-hover table-bordered table-light align-middle">
-                <thead class="table-dark">
+            <table class="table  table-bordered table-hover">
+                <thead>
                     <caption>
                         Drużyny
                     </caption>
-                    <tr>
+                    <tr class="table-warning">
                         <th>#</th>
                         <th>Nazwa Drużyny</th>
                         <th>Rozmiar drużyny</th>
@@ -104,7 +104,7 @@ $result = getAllTeams($conn);
                     <?php $i = 1 ?>
                     <?php while ($row = $result->fetch_assoc()): ?>
                         <tr>
-                            <td><?= $i++ ?></td>
+                            <th class="scope-row"><?= $i++ ?></th>
                             <td><?= $row['Name'] ?></td>
                             <td><?= $row['Size'] ?></td>
 

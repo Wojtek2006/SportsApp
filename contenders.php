@@ -176,12 +176,12 @@ $result = getAllContenders($conn);
         <!-- <a href="form/create_contender_form.php">Stwórz Zawodnika</a> -->
 
         <div class="table-responsive">
-            <table class="table table-striped table-hover table-bordered table-light align-middle">
-                <thead class="table-dark">
+            <table class="table table-hover table-bordered">
+                <thead>
                     <caption>
                         Zawodnicy
                     </caption>
-                    <tr>
+                    <tr class="table-warning">
                         <th>#</th>
                         <th>Imie</th>
                         <th>Nazwisko</th>
@@ -196,7 +196,7 @@ $result = getAllContenders($conn);
                     <?php $i = 1;
                     while ($row = $result->fetch_assoc()) : ?>
                         <tr>
-                            <th class="scope-row"><?= $i ?></th>
+                            <th class="scope-row"><?= $i++ ?></th>
                             <td><?= $row['FirstName'] ?></td>
                             <td><?= $row['LastName'] ?></td>
                             <td><?= $row['Class'] ?></td>
@@ -222,7 +222,6 @@ $result = getAllContenders($conn);
 
                             </td>
                         </tr>
-                        <?php $i++; ?>
                     <?php endwhile ?>
                 </tbody>
             </table>
