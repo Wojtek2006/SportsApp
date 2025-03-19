@@ -8,11 +8,12 @@ $database = 'sportsappdb';
 #CONNECTION WTIH SQL DATABASE
 #-----------------------------------------------------------------------------
 
-function connect($servername, $username, $password, $database) {
+function connect($servername, $username, $password, $database)
+{
     $conn = new mysqli($servername, $username, $password, $database);
 
     if ($conn->connect_error) {
-        die("Connection failed " . $conn->connect_error);
+        die("Connection failed ".$conn->connect_error);
     }
 
     return $conn;
@@ -21,7 +22,8 @@ function connect($servername, $username, $password, $database) {
 #GET FUNCTIONS
 #-----------------------------------------------------------------------------
 
-function getAllContenders($conn) {
+function getAllContenders($conn)
+{
     $sql = "SELECT * FROM Contenders";
 
     $result = $conn->query($sql);
@@ -29,15 +31,19 @@ function getAllContenders($conn) {
     return $result;
 }
 
-function getAllTeams($conn) {
-    $sql = "SELECT * FROM Teams";
+function getAllTeams($conn)
+{
+    // $sql = "SELECT * FROM Teams";
+    $sql = "SELECT ID AS teams_id, teams.Name, teams.CompetitionID, (SELECT COUNT(*) FROM contenders WHERE contenders.TeamID = teams_id) as Size FROM `teams`;";
+    // szczerze po prostu chcę mieć ilość osób w drużynie, ale jeśli masz lepszy pomysł to zmień
 
     $result = $conn->query($sql);
 
     return $result;
 }
 
-function getAllCompetitions($conn) {
+function getAllCompetitions($conn)
+{
     $sql = "SELECT * FROM Competitions";
 
     $result = $conn->query($sql);
@@ -45,7 +51,8 @@ function getAllCompetitions($conn) {
     return $result;
 }
 
-function getTeamContenders($conn, $ID) {
+function getTeamContenders($conn, $ID)
+{
     $stmt = $conn->prepare("SELECT * FROM Contenders WHERE TeamID = ?");
 
     $stmt->bind_param("i", $ID);
@@ -57,7 +64,8 @@ function getTeamContenders($conn, $ID) {
     return $result;
 }
 
-function getTeamName($conn, $TeamID) {
+function getTeamName($conn, $TeamID)
+{
     $stmt = $conn->prepare("SELECT Name FROM Teams WHERE ID = ?");
 
     $stmt->bind_param("i", $TeamID);
@@ -75,7 +83,8 @@ function getTeamName($conn, $TeamID) {
     return $result["Name"];
 }
 
-function getCompetitionTeams($conn, $CompID) {
+function getCompetitionTeams($conn, $CompID)
+{
     $stmt = $conn->prepare("SELECT * FROM Teams WHERE CompetitionID = ?");
 
     $stmt->bind_param("i", $CompID);
@@ -87,7 +96,8 @@ function getCompetitionTeams($conn, $CompID) {
     return $result;
 }
 
-function getTrackContenders($conn, $TeamIDs) {
+function getTrackContenders($conn, $TeamIDs)
+{
     $TrackContenders = [];
 
     foreach ($TeamIDs as $TeamID) {
@@ -102,13 +112,14 @@ function getTrackContenders($conn, $TeamIDs) {
         while ($row = $result->fetch_assoc()) {
             $TrackContenders[] = $row;
         }
-        
+
     }
 
     return $TrackContenders;
 }
 
-function getCompName($conn, $CompID) {
+function getCompName($conn, $CompID)
+{
     $stmt = $conn->prepare("SELECT name FROM Competitions WHERE ID = ?");
 
     $stmt->bind_param("i", $CompID);
@@ -122,16 +133,18 @@ function getCompName($conn, $CompID) {
     return $result["name"];
 }
 
-function getTrackContendersDB($conn, $CompName) {
+function getTrackContendersDB($conn, $CompName)
+{
     $ParsedName = str_replace(" ", "_", $CompName);
-    $TrackDBName = $ParsedName . "_Tracks";
+    $TrackDBName = $ParsedName."_Tracks";
 
     $result = $conn->query("SELECT * FROM $TrackDBName");
 
     return $result;
 }
 
-function getContenderFromScores($conn, $ContenderID) {
+function getContenderFromScores($conn, $ContenderID)
+{
     $stmt = $conn->prepare("SELECT * FROM Scores WHERE ContenderID = ?");
 
     $stmt->bind_param("i", $ContenderID);
@@ -143,7 +156,8 @@ function getContenderFromScores($conn, $ContenderID) {
     return $result;
 }
 
-function getScore($conn, $ContenderID) {
+function getScore($conn, $ContenderID)
+{
     $stmt = $conn->prepare("SELECT * FROM Scores WHERE ContenderID = ?");
 
     $stmt->bind_param("i", $ContenderID);
@@ -157,7 +171,8 @@ function getScore($conn, $ContenderID) {
     return $result;
 }
 
-function getContenderInfo($conn, $ContenderID) {
+function getContenderInfo($conn, $ContenderID)
+{
     $stmt = $conn->prepare("SELECT * FROM Contenders WHERE ID = ?");
 
     $stmt->bind_param("i", $ContenderID);
@@ -168,7 +183,7 @@ function getContenderInfo($conn, $ContenderID) {
 
     $result = $result->fetch_assoc();
 
-    $info = $result['FirstName'] . ' ' . $result['LastName'] . ' ' . $result['Class'];
+    $info = $result['FirstName'].' '.$result['LastName'].' '.$result['Class'];
 
     return $info;
 }
@@ -176,7 +191,8 @@ function getContenderInfo($conn, $ContenderID) {
 #CREATE FUNCTIONS
 #-----------------------------------------------------------------------------
 
-function createContender($conn, $FirstName, $LastName, $Class, $Gender, $Status) {
+function createContender($conn, $FirstName, $LastName, $Class, $Gender, $Status)
+{
     $stmt = $conn->prepare("INSERT INTO Contenders (FirstName, LastName, Class, Gender, Status) VALUES (?, ?, ?, ?, ?)");
 
     $stmt->bind_param("sssss", $FirstName, $LastName, $Class, $Gender, $Status);
@@ -184,7 +200,8 @@ function createContender($conn, $FirstName, $LastName, $Class, $Gender, $Status)
     $stmt->execute();
 }
 
-function createTeam($conn, $Name) {
+function createTeam($conn, $Name)
+{
     $stmt = $conn->prepare("INSERT INTO Teams (Name) VALUES (?)");
 
     $stmt->bind_param("s", $Name);
@@ -192,7 +209,8 @@ function createTeam($conn, $Name) {
     $stmt->execute();
 }
 
-function createCompetition($conn, $Name) {
+function createCompetition($conn, $Name)
+{
     $stmt = $conn->prepare("INSERT INTO Competitions (Name) VALUES (?)");
 
     $stmt->bind_param("s", $Name);
@@ -200,9 +218,10 @@ function createCompetition($conn, $Name) {
     $stmt->execute();
 }
 
-function createTrackDB($conn, $CompName) {
+function createTrackDB($conn, $CompName)
+{
     $ParsedName = str_replace(" ", "_", $CompName);
-    $TrackDBName = $ParsedName . "_Tracks";
+    $TrackDBName = $ParsedName."_Tracks";
 
     $result = $conn->query("CREATE TABLE $TrackDBName (
                             ID INT,
@@ -211,12 +230,13 @@ function createTrackDB($conn, $CompName) {
                             LastName VARCHAR(50),
                             Class VARCHAR(3))
                             ");
-} 
+}
 
 #DELETE FUNCTIONS
 #-----------------------------------------------------------------------------
 
-function deleteContender($conn, $ID) {
+function deleteContender($conn, $ID)
+{
     $stmt = $conn->prepare("DELETE FROM Contenders WHERE ID = ?");
 
     $stmt->bind_param("i", $ID);
@@ -224,7 +244,8 @@ function deleteContender($conn, $ID) {
     $stmt->execute();
 }
 
-function deleteTeam($conn, $ID) {
+function deleteTeam($conn, $ID)
+{
     $stmt = $conn->prepare("DELETE FROM Teams WHERE ID = ?");
 
     $stmt->bind_param("i", $ID);
@@ -232,7 +253,8 @@ function deleteTeam($conn, $ID) {
     $stmt->execute();
 }
 
-function deleteCompetition($conn, $ID) {
+function deleteCompetition($conn, $ID)
+{
     $stmt = $conn->prepare("DELETE FROM Competitions WHERE ID = ?");
 
     $stmt->bind_param("i", $ID);
@@ -240,7 +262,8 @@ function deleteCompetition($conn, $ID) {
     $stmt->execute();
 }
 
-function deleteFromTeam($conn, $ID) {
+function deleteFromTeam($conn, $ID)
+{
     $stmt = $conn->prepare("UPDATE Contenders SET TeamID = null WHERE ID = ?");
 
     $stmt->bind_param("i", $ID);
@@ -248,7 +271,8 @@ function deleteFromTeam($conn, $ID) {
     $stmt->execute();
 }
 
-function deleteFromCompetition($conn, $TeamID) {
+function deleteFromCompetition($conn, $TeamID)
+{
     $stmt = $conn->prepare("UPDATE Teams SET CompetitionID = null WHERE ID = ?");
 
     $stmt->bind_param("i", $TeamID);
@@ -256,14 +280,16 @@ function deleteFromCompetition($conn, $TeamID) {
     $stmt->execute();
 }
 
-function deleteTrackDB($conn, $CompName) {
+function deleteTrackDB($conn, $CompName)
+{
     $ParsedName = str_replace(" ", "_", $CompName);
-    $TrackDBName = $ParsedName . "_Tracks";
+    $TrackDBName = $ParsedName."_Tracks";
 
     $result = $conn->query("DROP TABLE $TrackDBName");
 }
 
-function deleteScore($conn, $ContenderID) {
+function deleteScore($conn, $ContenderID)
+{
     $stmt = $conn->prepare("DELETE FROM Scores WHERE ContenderID = ?");
 
     $stmt->bind_param("i", $ContenderID);
@@ -274,7 +300,8 @@ function deleteScore($conn, $ContenderID) {
 #ADD METHODS
 #-----------------------------------------------------------------------------
 
-function addContenderToTeam($conn, $TeamID, $ID) {
+function addContenderToTeam($conn, $TeamID, $ID)
+{
     $stmt = $conn->prepare("UPDATE Contenders SET TeamID = ? WHERE ID = ?");
 
     $stmt->bind_param("ii", $TeamID, $ID);
@@ -282,7 +309,8 @@ function addContenderToTeam($conn, $TeamID, $ID) {
     $stmt->execute();
 }
 
-function addTeamToCompetition($conn, $CompID, $TeamID) {
+function addTeamToCompetition($conn, $CompID, $TeamID)
+{
     $stmt = $conn->prepare("UPDATE Teams SET CompetitionID = ? WHERE ID = ?");
 
     $stmt->bind_param("ii", $CompID, $TeamID);
@@ -290,9 +318,10 @@ function addTeamToCompetition($conn, $CompID, $TeamID) {
     $stmt->execute();
 }
 
-function addTrack($conn, $CompName, $track, $firstName, $lastName, $class, $ID) {
+function addTrack($conn, $CompName, $track, $firstName, $lastName, $class, $ID)
+{
     $ParsedName = str_replace(" ", "_", $CompName);
-    $TrackDBName = $ParsedName . "_Tracks";
+    $TrackDBName = $ParsedName."_Tracks";
 
     $stmt = $conn->prepare("INSERT INTO $TrackDBName (ID, Track, FirstName, LastName, Class)
                             VALUES (?, ?, ?, ?, ?)");
@@ -302,7 +331,8 @@ function addTrack($conn, $CompName, $track, $firstName, $lastName, $class, $ID) 
     $stmt->execute();
 }
 
-function addScore($conn, $score, $ContenderID, $CompID, $Tour) {
+function addScore($conn, $score, $ContenderID, $CompID, $Tour)
+{
 
     $stmt = $conn->prepare("INSERT INTO Scores ( ContenderID, Score, CompID, Tour ) 
                             VALUES (?, ?, ?, ?)");
@@ -315,21 +345,22 @@ function addScore($conn, $score, $ContenderID, $CompID, $Tour) {
 #OTHER METHODS
 #-----------------------------------------------------------------------------
 
-function checkIfTrackDBExists($conn, $CompName) {
+function checkIfTrackDBExists($conn, $CompName)
+{
     $ParsedName = str_replace(" ", "_", $CompName);
-    $TrackDBName = $ParsedName . "_Tracks";
+    $TrackDBName = $ParsedName."_Tracks";
 
     $result = $conn->query("SHOW TABLES LIKE '{$TrackDBName}'");
 
     if ($result->num_rows == 1) {
         return true;
-    }
-    else {
+    } else {
         return false;
     }
 }
 
-function checkIfScorePresent($conn, $ContenderID) {
+function checkIfScorePresent($conn, $ContenderID)
+{
     $stmt = $conn->prepare("SELECT * FROM Scores WHERE ContenderID = ?");
 
     $stmt->bind_param("i", $ContenderID);
@@ -340,13 +371,13 @@ function checkIfScorePresent($conn, $ContenderID) {
 
     if ($result->num_rows == 1) {
         return true;
-    }
-    else {
+    } else {
         return false;
     }
 }
 
-function calculateResults($conn, $tour) {
+function calculateResults($conn, $tour)
+{
     $stmt = $conn->prepare("SELECT ContenderID, TIME_FORMAT(CONCAT('00:', Score), '%i:%s') as Score, Tour FROM Scores WHERE Tour = ? ORDER BY Score ASC");
 
     $stmt->bind_param("i", $tour);

@@ -102,15 +102,16 @@ $result = getAllTeams($conn);
                 </thead>
                 <tbody>
                     <?php $i = 1 ?>
-                    <?php while ($row = $result->fetch_assoc()) : ?>
+                    <?php while ($row = $result->fetch_assoc()): ?>
                         <tr>
                             <td><?= $i++ ?></td>
                             <td><?= $row['Name'] ?></td>
                             <td><?= $row['Size'] ?></td>
 
                             <td class="d-flex justify-content-around">
-                                <a name="" id="" class="btn btn-primary" href="team_contenders.php?TeamID=<?= $row['ID'] ?>"
-                                    role="button"><i class="fa-solid fa-users"></i></a>
+                                <a name="" id="" class="btn btn-primary"
+                                    href="team_contenders.php?TeamID=<?= $row['teams_id'] ?>" role="button"><i
+                                        class="fa-solid fa-users"></i></a>
                                 <div class="d-grid gap-2">
                                     <button type="button" class="btn btn-danger" data-toggle="modal"
                                         data-target="#ContenderDeletionModal">
